@@ -1,0 +1,101 @@
+#python
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+*.db
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+*.egg-info/
+*.whl
+*.zip
+*.tar.gz
+*.tar
+*.tgz
+
+# PyInstaller
+#  Usually these are not committed
+pyinstaller/
+
+# Installer logs
+pip-log.txt
+pip-log-*.txt
+
+# Unit test / coverage
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+*.bench
+*.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+staticfiles/
+
+# If you run tests that create a tmp directory, ignore that as well
+testtmp/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Pyre type checker
+.pyre/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pytest caches
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# PyCharm project files
+*.sublime-project
+*.sublime-workspace
