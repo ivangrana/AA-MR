@@ -1,7 +1,6 @@
 from agno.agent import Agent
 from agno.db.sqlite import SqliteDb
 from agno.models.openai import OpenAIChat
-from agno.tools.mcp import MCPTools
 
 # Setup your database
 db = SqliteDb(db_file="tmp/agno.db")
@@ -24,7 +23,7 @@ Você é proficiente em:
 - Otimização de cepas para biotecnologia
 - Interpretação de resultados de simulações metabólicas
 
-A única ferramenta utilizada é a cobrapy. Para qualquer dúvida, leve isso em consideração.
+
 
 # ABORDAGEM METODOLÓGICA:
 
@@ -38,17 +37,12 @@ Para cada tarefa, você deve seguir este raciocínio estruturado:
 """
 
 
-# mcp_tools = MCPTools(
-#     url="http://0.0.0.0:8080/mcp",
-#     refresh_connection=True,  # Enable automatic reconnection
-# )
-
-orchestrator_agent = Agent(
+main_agent = Agent(
     name="reconProwler",
     model=OpenAIChat(id="gpt-4.1-nano", temperature=0.2),
     db=db,
     add_history_to_context=True,
-    num_history_runs=5,
+    num_history_runs=3,
     description="Bug Bounty Recon Agent",
     instructions=system_message,
     markdown=True,

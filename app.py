@@ -1,9 +1,9 @@
 import asyncio
-from turtle import onclick
 
 import streamlit as st
+from agno.tools.mcp import MCPTools
 
-from src.agents import orchestrator_agent
+from src.agents import main_agent
 
 st.set_page_config(page_title="AA-MR", layout="wide", page_icon=":material/graph_3:")
 
@@ -60,8 +60,16 @@ with st.sidebar:
                     "username": username,
                     "password": password,
                 }
+
+                main_agent.tools.append(
+                    MCPTools(
+                        url=f"http://{host}:{port}/mcp",
+                    )
+                )
+
                 st.success("MCP server connection parameters saved.")
-                st.rerun()
+                # st.rerun()
+
         with col2:
             if st.button("Close"):
                 st.rerun()
@@ -107,9 +115,7 @@ if page == "Chat":
         async def async_run_agent(prompt):
             full = ""
             placeholder = st.empty()
-            async for chunk in orchestrator_agent.arun(
-                prompt, stream=True, debug_mode=True
-            ):
+            async for chunk in main_agent.arun(prompt, stream=True, debug_mode=True):
                 if chunk.content:
                     full += chunk.content
                     placeholder.markdown(full + "▌")
@@ -171,33 +177,7 @@ elif page == "Dashboard":
 
 
 elif page == "Reconaissance agent":
-    st.header("Reconaissance Agent")
-    # ---------- display history ----------
-    for msg in st.session_state.recon_messages:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
-    # ---------- input ----------
-    if prompt := st.chat_input("Ask me anything…"):
-        st.session_state.recon_messages.append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
-
-        # ---------- run agent ----------
-        async def async_run_agent(prompt):
-            full = ""
-            placeholder = st.empty()
-            async for chunk in orchestrator_agent.arun(
-                prompt, stream=True, debug_mode=True
-            ):
-                if chunk.content:
-                    full += chunk.content
-                    placeholder.markdown(full + "▌")
-            placeholder.markdown(full)
-            return full
-
-        with st.chat_message("assistant"):
-            full = asyncio.run(async_run_agent(prompt))
-        st.session_state.recon_messages.append({"role": "assistant", "content": full})
+    print("hi")
 
 elif page == "Training":
     st.header("Knowledge Base")
