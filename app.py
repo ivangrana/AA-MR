@@ -104,7 +104,7 @@ if page == "Chat":
     # ---------- display history ----------
     for msg in st.session_state.chat_messages:
         with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+            st.markdown(msg["content"], unsafe_allow_html=False)
     # ---------- input ----------
     if prompt := st.chat_input("Ask me anything…"):
         st.session_state.chat_messages.append({"role": "user", "content": prompt})
