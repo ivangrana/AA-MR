@@ -1,6 +1,7 @@
 from agno.agent import Agent
 from agno.db.sqlite import SqliteDb
 from agno.models.openai import OpenAIChat
+from agno.tools.mcp import MCPTools
 
 # Setup your database
 db = SqliteDb(db_file="tmp/agno.db")
@@ -23,8 +24,6 @@ Você é proficiente em:
 - Otimização de cepas para biotecnologia
 - Interpretação de resultados de simulações metabólicas
 
-
-
 # ABORDAGEM METODOLÓGICA:
 
 Para cada tarefa, você deve seguir este raciocínio estruturado:
@@ -36,6 +35,7 @@ Para cada tarefa, você deve seguir este raciocínio estruturado:
 - Quais são as restrições e condições experimentais?
 """
 
+mcp_tools = MCPTools(url="http://127.0.0.1:8001/mcp")
 
 main_agent = Agent(
     name="reconProwler",
@@ -48,4 +48,5 @@ main_agent = Agent(
     markdown=True,
     reasoning=False,
     debug_level=1,
+    tools=[mcp_tools],
 )
