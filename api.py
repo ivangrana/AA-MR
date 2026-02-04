@@ -1,5 +1,6 @@
 import json
 import os
+import uuid
 from typing import List
 
 from fastapi import (
@@ -38,7 +39,6 @@ def load_db():
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "r") as f:
             return json.load(f)
-    return []
 
 
 def save_db(data):
@@ -53,7 +53,7 @@ knowledge_router = APIRouter()
 
 
 class Knowledge(BaseModel):
-    id: str
+    id: str | None = None
     title: str
     content: str
     category: str
@@ -71,8 +71,9 @@ async def read_knowledge(db=Depends(get_db)):
 
 
 @knowledge_router.post("/knowledge/", response_model=Knowledge)
-async def create_knowledge(knowledge: Knowledge, db=Depends(get_db)):
+async def create_knowledge(knowledge: Knowledge, db=Depends(load_db)):
     """Create a new knowledge entry."""
+    knowledge.id = str(uuid.uuid4())
     if any(i["id"] == knowledge.id for i in db):
         raise HTTPException(status_code=400, detail="Knowledge ID already exists")
     db.append(knowledge.model_dump())
@@ -107,6 +108,7 @@ async def delete_knowledge(knowledge_id: str, db=Depends(get_db)):
     """Delete an existing knowledge entry."""
     new_db = [i for i in db if i["id"] != knowledge_id]
     save_db(new_db)
+
     return {"message": "Knowledge deleted"}
 
 

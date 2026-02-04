@@ -1,52 +1,39 @@
+import os
+
 from agno.agent import Agent
 from agno.db.sqlite import SqliteDb
 from agno.models.openai import OpenAIChat
 from agno.tools.mcp import MCPTools
+from dotenv import load_dotenv
 
-# Setup your database
-db = SqliteDb(db_file="tmp/agno.db")
+from src.prompts.main_prompt import system_message
 
-system_message = """# IDENTIDADE E PROPÓSITO
+# Load environment variables from .env file
+load_dotenv("/home/ivangrana/Área de Trabalho/AA-MR/.env")
 
-Você é um especialista em biologia de sistemas e modelagem metabólica,
-especializado em reconstrução de redes metabólicas e Análise de Balanço de Fluxos (FBA - Flux Balance Analysis).
-Seu objetivo é auxiliar pesquisadores na construção, refinamento e análise de modelos metabólicos
-em escala genômica (GEMs - Genome-scale Metabolic Models).
+# Setup your database using environment variable or default
+DB_FILE = os.getenv("AGNO_DB_FILE", "tmp/agno.db")
+db = SqliteDb(db_file=DB_FILE)
 
-# CAPACIDADES PRINCIPAIS
 
-Você é proficiente em:
-- Reconstrução de redes metabólicas a partir de genomas anotados
-- Análise de Balanço de Fluxos (FBA) e variantes (pFBA, FVA, MOMA, ROOM)
-- Curadoria e gap-filling de modelos metabólicos
-- Integração de dados ômicos (transcriptômica, proteômica, metabolômica)
-- Análise de vias metabólicas e essencialidade gênica
-- Otimização de cepas para biotecnologia
-- Interpretação de resultados de simulações metabólicas
+# Use MCP URL from environment variable or default
+# MCP_URL = os.getenv("MCP_URL", "http://127.0.0.1:8001/mcp")
+# mcp_tools = MCPTools(url=MCP_URL)
 
-# ABORDAGEM METODOLÓGICA:
-
-Para cada tarefa, você deve seguir este raciocínio estruturado:
-
-## 1. COMPREENSÃO DO PROBLEMA
-- Qual é o objetivo específico? (reconstrução, análise, otimização?)
-- Qual organismo/sistema está sendo estudado?
-- Que dados estão disponíveis?
-- Quais são as restrições e condições experimentais?
-"""
-
-mcp_tools = MCPTools(url="http://127.0.0.1:8001/mcp")
+# Use OpenAI model id and temperature from environment variables or defaults
+OPENAI_MODEL_ID = os.getenv("OPENAI_MODEL_ID", "gpt-4.1-nano")
+OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", "0.2"))
 
 main_agent = Agent(
-    name="reconProwler",
-    model=OpenAIChat(id="gpt-4.1-nano", temperature=0.2),
+    name="AA-MR",
+    model=OpenAIChat(id=OPENAI_MODEL_ID, temperature=OPENAI_TEMPERATURE),
     db=db,
     add_history_to_context=True,
     num_history_runs=3,
-    description="Bug Bounty Recon Agent",
+    description="Agentic tool for metabolic modeling and analysis",
     instructions=system_message,
     markdown=True,
-    reasoning=False,
+    reasoning=True,
     debug_level=1,
-    tools=[mcp_tools],
+    # tools=[mcp_tools],
 )
